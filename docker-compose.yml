@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gato-chef-app:latest
     restart: unless-stopped
     networks:
       - gatochefnet
