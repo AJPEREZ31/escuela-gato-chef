@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ajperez31/escuela-gato-chef:latest
     restart: unless-stopped
     networks:
       - gatochefnet
