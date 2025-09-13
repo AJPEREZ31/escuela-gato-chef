@@ -1,24 +1,38 @@
-# 1. Instalar dependencias
-FROM node:18-alpine AS deps
+# Etapa 1: Clonar el repositorio
+FROM alpine/git as clone
 WORKDIR /app
-COPY package.json package-lock.json ./
+RUN git clone https://github.com/AJPEREZ31/escuela-gato-chef.git .
+
+# Etapa 2: Construir la aplicación
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copiar solo los archivos necesarios del clon
+COPY --from=clone /app/package*.json ./
+COPY --from=clone /app/next.config.ts ./
+COPY --from=clone /app/tsconfig.json ./
+COPY --from=clone /app/src ./src
+COPY --from=clone /app/public ./public
+COPY --from=clone /app/components.json ./
+COPY --from=clone /app/tailwind.config.ts ./
+
+# Instalar dependencias
 RUN npm install
 
-# 2. Construir la aplicación
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# Construir la aplicación
 RUN npm run build
 
-# 3. Ejecutar la aplicación
-FROM node:18-alpine AS runner
+# Etapa 3: Producción
+FROM node:20-alpine AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
+
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
+
 CMD ["npm", "start"]
