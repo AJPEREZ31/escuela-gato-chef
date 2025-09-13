@@ -11,7 +11,7 @@ services:
       - "traefik.http.routers.gato-chef-app.rule=Host(`inscripciones.gatochef.online`)"
       - "traefik.http.routers.gato-chef-app.entrypoints=websecure"
       - "traefik.http.routers.gato-chef-app.tls.certresolver=letsencryptresolver"
-      # This is the crucial fix: Traefik will now correctly connect to port 3000 inside the container
+      # Esta es la corrección crucial para que Traefik encuentre el servicio
       - "traefik.http.services.gato-chef-app.loadbalancer.server.port=3000"
     environment:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
