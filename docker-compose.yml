@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: ajperez31/escuela-gato-chef:latest
+    build: .
     restart: unless-stopped
     networks:
       - gatochefnet
