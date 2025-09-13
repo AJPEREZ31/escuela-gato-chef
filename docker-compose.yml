@@ -2,15 +2,19 @@ version: '3.8'
 
 services:
   app:
-    image: ajperez31/escuela-gato-chef:latest
+    # Use 'build' to construct the image from the Dockerfile in the current directory.
+    # This ensures the image architecture matches the server's architecture.
+    build: .
     restart: unless-stopped
     networks:
       - gatochefnet
+    # Traefik labels to expose the service
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gato-chef-app.rule=Host(`inscripciones.gatochef.online`)"
       - "traefik.http.routers.gato-chef-app.entrypoints=websecure"
       - "traefik.http.routers.gato-chef-app.tls.certresolver=letsencryptresolver"
+      # CRITICAL: This tells Traefik the service name and port inside the container.
       - "traefik.http.services.gato-chef-app.loadbalancer.server.port=3000"
     environment:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
