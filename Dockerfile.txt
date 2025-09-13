@@ -1,34 +1,24 @@
-# 1. Base Image: Use an official Node.js image.
-FROM node:20-alpine AS base
+# 1. Base Image
+FROM node:18-alpine AS base
 
-# 2. Set Working Directory
+# 2. Build Stage
+FROM base AS builder
 WORKDIR /app
-
-# 3. Install Dependencies
-# Use a separate step for dependencies to leverage Docker layer caching.
-COPY package.json ./
-COPY package-lock.json ./
+COPY package*.json ./
 RUN npm install
-
-# 4. Copy App Code
 COPY . .
-
-# 5. Build the Next.js App
 RUN npm run build
 
-# 6. Production Image: Create a smaller, final image.
-FROM node:20-alpine AS production
-
+# 3. Production Stage
+FROM base AS production
 WORKDIR /app
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
-# Copy built files from the 'base' stage
-COPY --from=base /app/.next ./.next
-COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/package.json ./package.json
-COPY --from=base /app/public ./public
-
-# Expose the port the app will run on
+# Expose port 3000
 EXPOSE 3000
 
-# Command to start the app
+# Start the app
 CMD ["npm", "start"]
