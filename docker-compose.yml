@@ -2,8 +2,6 @@ version: '3.8'
 
 services:
   app:
-    # Construye la imagen desde el Dockerfile en el directorio actual
-    # Esto asegura que la imagen se cree con la arquitectura correcta en tu servidor.
     build: .
     restart: unless-stopped
     networks:
@@ -13,7 +11,6 @@ services:
       - "traefik.http.routers.gato-chef-app.rule=Host(`inscripciones.gatochef.online`)"
       - "traefik.http.routers.gato-chef-app.entrypoints=websecure"
       - "traefik.http.routers.gato-chef-app.tls.certresolver=letsencryptresolver"
-      # Apunta al puerto 3000 que se expone en el Dockerfile
       - "traefik.http.services.gato-chef-app.loadbalancer.server.port=3000"
     environment:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
