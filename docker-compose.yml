@@ -12,6 +12,12 @@ services:
       - "traefik.http.routers.gato-chef-app.entrypoints=websecure"
       - "traefik.http.routers.gato-chef-app.tls.certresolver=letsencryptresolver"
       - "traefik.http.services.gato-chef-app.loadbalancer.server.port=3000"
+      # --- INICIO DE LA CORRECCIÓN ---
+      # Añadir middleware para establecer la cabecera X-Forwarded-Proto a https
+      - "traefik.http.middlewares.gato-chef-app-x-forwarded-proto.headers.customrequestheaders.X-Forwarded-Proto=https"
+      # Aplicar el middleware al router
+      - "traefik.http.routers.gato-chef-app.middlewares=gato-chef-app-x-forwarded-proto"
+      # --- FIN DE LA CORRECCIÓN ---
     environment:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
       - NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
