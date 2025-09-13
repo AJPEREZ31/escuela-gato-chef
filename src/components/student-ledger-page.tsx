@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from 'react';
@@ -687,7 +688,7 @@ export function StudentLedgerPage() {
                         activeCourse.dateRange.to ? (
                           <>
                             {format(activeCourse.dateRange.from, "LLL dd, y", { locale: es })} -{" "}
-                            {format(active-course.dateRange.to, "LLL dd, y", { locale: es })}
+                            {format(activeCourse.dateRange.to, "LLL dd, y", { locale: es })}
                           </>
                         ) : (
                           format(activeCourse.dateRange.from, "LLL dd, y", { locale: es })
